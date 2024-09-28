@@ -1,96 +1,39 @@
-FROM php:8.2.7-fpm-alpine3.18
-
-LABEL maintainer="Ric Harvey <ric@squarecows.com>"
+FROM php:8.3.12-fpm-alpine3.20
 
 ENV php_conf /usr/local/etc/php-fpm.conf
 ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
 ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
 
-ENV LUAJIT_LIB=/usr/lib
-ENV LUAJIT_INC=/usr/include/luajit-2.1
-
-# resolves #166
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv
-
-
-# INstall nginx + lua and devel kit
-RUN apk add --no-cache nginx \
-    nginx-mod-http-lua \
-    nginx-mod-devel-kit
-
-RUN echo @testing https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
-    echo /etc/apk/respositories && \
-    apk update && apk upgrade &&\
+RUN apk update && \
+    apk upgrade && \
     apk add --no-cache \
-    bash \
-    openssh-client \
-    wget \
-    supervisor \
-    curl \
-    libcurl \
-    libpq \
-    git \
-    python3 \
-    py3-pip \
-    dialog \
-    autoconf \
-    make \
-    libzip-dev \
-    bzip2-dev \
-    icu-dev \
-    tzdata \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
-    libxslt-dev \
-    gcc 
+        nginx \
+        bash \
+        openssh-client \
+        wget \
+        supervisor \
+        curl \
+        libcurl \
+        dialog \
+        autoconf \
+        make \
+        libzip-dev \
+        bzip2-dev \
+        tzdata \
+        gcc
 
 RUN apk add --no-cache --virtual .sys-deps \
-    musl-dev \
-    linux-headers \
-    augeas-dev \
-    libmcrypt-dev \
-    python3-dev \
-    libffi-dev \
-    sqlite-dev \
-    imap-dev \
-    postgresql-dev \
-    lua-resty-core \
-    libjpeg-turbo-dev \
-    libwebp-dev \
-    zlib-dev \
-    libxpm-dev \
-    libpng \
-    libpng-dev && \
-  # Install PHP modules
-    docker-php-ext-configure gd \
-      --enable-gd \
-      --with-freetype \
-      --with-jpeg && \
-    docker-php-ext-install gd && \
-     pip install --upgrade pip && \
-    docker-php-ext-install pdo_mysql mysqli pdo_sqlite pgsql pdo_pgsql exif intl xsl soap zip && \
-    pecl install -o -f xdebug && \
-    pecl install -o -f redis && \ 
-    pecl install -o -f mongodb && \
-    echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini && \
-    echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini && \
-    echo "zend_extension=xdebug" > /usr/local/etc/php/conf.d/xdebug.ini && \
-    docker-php-source delete && \
-    mkdir -p /var/www/app && \
-  # Install composer and certbot
-    mkdir -p /var/log/supervisor && \
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer && \
-    rm composer-setup.php &&\
-  #  pip3 install -U pip && \
-    pip3 install -U certbot && \
-    mkdir -p /etc/letsencrypt/webrootauth && \
-    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python3-dev make autoconf && \
-    apk del .sys-deps
+        sqlite-dev \
+        zlib-dev \
+        musl-dev \
+        linux-headers && \
+        docker-php-ext-install pdo_sqlite zip && \
+        docker-php-source delete && \
+        apk del gcc musl-dev linux-headers make autoconf && \
+        apk del .sys-deps
 
 ADD conf/supervisord.conf /etc/supervisord.conf
+RUN mkdir -p /var/log/supervisor
 
 # Copy our nginx config
 RUN rm -Rf /etc/nginx/nginx.conf
@@ -98,12 +41,11 @@ ADD conf/nginx.conf /etc/nginx/nginx.conf
 
 # nginx site conf
 RUN mkdir -p /etc/nginx/sites-available/ && \
-mkdir -p /etc/nginx/sites-enabled/ && \
-mkdir -p /etc/nginx/ssl/ && \
-rm -Rf /var/www/* && \
-mkdir /var/www/html/
+    mkdir -p /etc/nginx/sites-enabled/ && \
+    mkdir -p /etc/nginx/ssl/ && \
+    rm -Rf /var/www/* && \
+    mkdir /var/www/html/
 ADD conf/nginx-site.conf /etc/nginx/sites-available/default.conf
-ADD conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
 # tweak php-fpm config
@@ -111,7 +53,7 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
     echo "upload_max_filesize = 100M"  >> ${php_vars} &&\
     echo "post_max_size = 100M"  >> ${php_vars} &&\
     echo "variables_order = \"EGPCS\""  >> ${php_vars} && \
-    echo "memory_limit = 128M"  >> ${php_vars} && \
+    echo "memory_limit = 1024M"  >> ${php_vars} && \
     sed -i \
         -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
         -e "s/pm.max_children = 5/pm.max_children = 4/g" \
@@ -127,7 +69,7 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
         -e "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g" \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
-#    ln -s /etc/php7/php.ini /etc/php7/conf.d/php.ini && \
+
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
 	sed -i \
 	    -e "s/;opcache/opcache/g" \
@@ -137,18 +79,27 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
 
 # Add Scripts
 ADD scripts/start.sh /start.sh
-ADD scripts/pull /usr/bin/pull
-ADD scripts/push /usr/bin/push
-ADD scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
-ADD scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
-RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /start.sh
+RUN chmod 755 /start.sh
 
 # copy in code
-ADD src/ /var/www/html/
-ADD errors/ /var/www/errors
+ADD --chown=nginx:nginx src/ /var/www/html/
+ADD --chown=nginx:nginx errors/ /var/www/errors
 
+RUN  \
+    # Display PHP error's
+    echo "php_flag[display_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf && \
 
-EXPOSE 443 80
+    # Display Version Details or not
+    sed -i "s/expose_php = On/expose_php = Off/g" /usr/local/etc/php-fpm.conf && \
+
+    # Set the desired timezone
+    echo "date.timezone=America/Caracas" > /usr/local/etc/php/conf.d/timezone.ini && \
+
+    # Display errors in docker logs
+    echo "log_errors = On" >> /usr/local/etc/php/conf.d/docker-vars.ini && \
+    echo "error_log = /dev/stderr" >> /usr/local/etc/php/conf.d/docker-vars.ini
+
+EXPOSE 8080
 
 WORKDIR "/var/www/html"
 CMD ["/start.sh"]
