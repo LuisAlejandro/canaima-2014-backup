@@ -85,21 +85,15 @@ RUN chmod 755 /start.sh
 ADD --chown=nginx:nginx src/ /var/www/html/
 ADD --chown=nginx:nginx errors/ /var/www/errors
 
-RUN  \
-    # Display PHP error's
-    echo "php_flag[display_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf && \
-
-    # Display Version Details or not
+RUN echo "php_flag[display_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf && \
     sed -i "s/expose_php = On/expose_php = Off/g" /usr/local/etc/php-fpm.conf && \
-
-    # Set the desired timezone
     echo "date.timezone=America/Caracas" > /usr/local/etc/php/conf.d/timezone.ini && \
-
-    # Display errors in docker logs
     echo "log_errors = On" >> /usr/local/etc/php/conf.d/docker-vars.ini && \
     echo "error_log = /dev/stderr" >> /usr/local/etc/php/conf.d/docker-vars.ini
 
 EXPOSE 8080
+EXPOSE 8081
+EXPOSE 8082
 
 WORKDIR "/var/www/html"
 CMD ["/start.sh"]

@@ -1,0 +1,53 @@
+mv d7125fde42f94009256480b216a94bc4b3be72ed.00001950.data binary.iso
+
+mv 7a756dc45f567630d61dfc30246605094e64d273.00002022.data canaima-popular-3.1~estable_amd64.iso
+
+mv b484647147a05d44bafaa92afe60038d5882b1fc.00002028.data canaima-popular-3.1~VC1_amd64.iso
+
+mv 607d9196e1cd9f3707694fe5f6960fe1f588fbe7.00002024.data canaima-popular-3.1~estable_i386.iso
+
+mv 86911d7c757e3676416c34f6c3f49bfb5fec7c66.00002000.data canaima-3.0~estable_i386.iso
+
+mv 22e8e63f2e9c37d5338ba8e1f9bb69a64437201d.00001997.data canaima-3.0~estable_amd64.iso
+
+mv bd951a13fbbf25bc6bbe920283a8c55c3e0a9299.00002036.data canaima-popular-4.0%7Eb1_amd64.iso
+
+mv 07c30e4140b452a10f431d2802438a1c5386b908.00002037.data canaima-popular-4.0%7Eb1_i386.iso
+
+mv eb2c1994a9d0c836c97b858a47f154e36ffb2281.00002030.data canaima-popular-3.1~VC1_i386.iso
+
+mv 5093b1a74571f3e20016689e64cec0c02db6039a.00002032.data canaima-popular-3.1~VC3_amd64.iso
+
+mv 8ab62e29b0755653945c4c127abf4bca82dd4a21.00002034.data canaima-popular-3.1~VC3_i386.iso
+
+mv c2ef488636f5a13475c8c505304c165f05eed2f6.00001988.data Canaima-2.1-DVDnVivo_all.iso
+
+mv c95f7e6463ee6e3fe8fd36b00bb4f5e10b308e10.00002042.data canaima-popular-4.0~b1_amd64.iso
+
+mv f965d1baa4e4bcab7900fe9a6c3d0c5ce06d7529.00002040.data canaima-popular-4.0~a1_i386.iso
+
+mv 1d738ac4def036e4e03ca73f48a78d27253f3fea.00002038.data canaima-popular-4.0~a1_amd64.iso
+
+mv b86954a30dbab5771504af91a101fad7ee7e1e81.00002044.data canaima-popular-4.0~b1_i386.iso
+
+mv 241e1feff9cc6083e61e2c1848609b8ead9e9b32.00002057.data geocanaima.iso
+
+mv 9133e882676a57eb2ac539c55dc66288eb706153.00001992.gz canaima-2doGrado-N270-13-12-10-img.tar.gz
+
+mv 3dfc7d38b67b28dac2d1967feafe89969cf5d078.00001100 Presentacion_Canaima_ME_CP.odp
+
+mv 4a17f0ec25309b06fd9ea838d769ceb828a85c8e.00001104 Presentacion_Canaima_SUNAI.odp
+
+mv 5dbbf2419b117f4a9d4b8bc91b30077989318308.00001088.data Canaima_Jornastec2011_CP.odp
+
+mv 274f244d3f9f31261d1f9b4b415d14e36a957fff.00001099.data Presentacion_Canaima_ME_CP-2.odp
+
+mv 77975eefd0a8729ea2281abf8885a8e9946724cf.00001089 Canaima_Jornastec2011_CP-2.odp
+
+mv b054e6b5c2578d652971c66ae468aebd7d7bc514.00001103.data Presentacion_Canaima_SUNAI-2.odp
+
+mv ea99d73eeb7038f1d8c56b416efb9566bda79ad9.00001076.data Canaima_Flisol_CP.odp
+
+mv ef06b55e5f1fde2d51639e8d9c7c3de68003e1c2.00001077 Canaima_Flisol_CP-2.odp
+
+mv dee76bc2d49a276248f98cef9f9004c5ce4be0b6.00002104.ogg Cayapa_Canaima.ogg
